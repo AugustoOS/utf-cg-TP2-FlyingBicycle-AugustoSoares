@@ -34,32 +34,43 @@ body { background: #000; overflow: hidden; }
     display: block;
 }
 
-/* botões de direção — visíveis apenas em dispositivos touch */
+/* D-pad — visível apenas em dispositivos touch */
 #mobileControls {
     display: none;
     position: fixed;
     bottom: clamp(20px, 5vh, 40px);
-    left: 0;
-    right: 0;
-    justify-content: space-between;
-    padding: 0 clamp(15px, 4vw, 30px);
+    right: clamp(15px, 4vw, 30px);
     z-index: 10;
-    pointer-events: none;
 }
 
 @media (pointer: coarse) {
-    #mobileControls { display: flex; }
+    #mobileControls { display: block; }
 }
 
+#dpad {
+    display: grid;
+    grid-template-areas:
+        ". up ."
+        "left . right"
+        ". down .";
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows:    repeat(3, 1fr);
+    gap: 5px;
+}
+
+#btnUp    { grid-area: up; }
+#btnLeft  { grid-area: left; }
+#btnRight { grid-area: right; }
+#btnDown  { grid-area: down; }
+
 .mobileBtn {
-    pointer-events: all;
-    width: clamp(64px, 18vw, 90px);
-    height: clamp(64px, 18vw, 90px);
+    width: clamp(52px, 14vw, 70px);
+    height: clamp(52px, 14vw, 70px);
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 16px;
+    border-radius: 14px;
     color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(24px, 7vw, 36px);
+    font-size: clamp(18px, 5vw, 26px);
     display: flex;
     align-items: center;
     justify-content: center;

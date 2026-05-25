@@ -1,7 +1,7 @@
 const state = {
     bike: { x: 0, y: 20, z: 0, angle: 0, turnVel: 0 },
     keys: {},
-    touch: { left: false, right: false },
+    touch: { left: false, right: false, up: false, down: false },
     camera: {
         active: 1,
         side:   0,
@@ -14,9 +14,9 @@ const state = {
 const Y_MIN      = 15;    // altura mínima de voo
 const Y_MAX      = 80;    // altura máxima de voo
 const SPEED      = 0.2;   // velocidade de avanço
-const TURN_ACCEL = 0.001; // aceleração da curva
-const TURN_MAX   = 0.02;  // velocidade máxima de curva
-const TURN_DECAY = 0.6;   // desacelera ao soltar a tecla
+const TURN_ACCEL = 0.0005; // aceleração da curva
+const TURN_MAX   = 0.010;  // velocidade máxima de curva
+const TURN_DECAY = 0.6;    // desacelera ao soltar a tecla
 
 const COR_CEU = [0.02, 0.03, 0.12]; // cor do céu noturno (usada no fundo e no fog)
 
@@ -153,6 +153,8 @@ async function main() {
         btn.addEventListener('touchend',    release, { passive: false });
         btn.addEventListener('touchcancel', release, { passive: false });
     }
+    setupMobileBtn('btnUp',    'up');
+    setupMobileBtn('btnDown',  'down');
     setupMobileBtn('btnLeft',  'left');
     setupMobileBtn('btnRight', 'right');
 
@@ -184,8 +186,8 @@ function update() {
     state.camera.orbit.yaw += b.turnVel;
 
     // altura com limite
-    if (k['ArrowUp']   || k['KeyW']) b.y = Math.min(b.y + 0.15, Y_MAX);
-    if (k['ArrowDown'] || k['KeyS']) b.y = Math.max(b.y - 0.15, Y_MIN);
+    if (k['ArrowUp']   || k['KeyW'] || state.touch.up)   b.y = Math.min(b.y + 0.15, Y_MAX);
+    if (k['ArrowDown'] || k['KeyS'] || state.touch.down) b.y = Math.max(b.y - 0.15, Y_MIN);
 
     // avança automaticamente
     b.x -= Math.sin(b.angle) * SPEED;
