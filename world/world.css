@@ -1,0 +1,35 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { background: #000; overflow: hidden; }
+
+.canvas { width: 100vw; height: 100vh; display: block; }
+
+#hud {
+    position: fixed;
+    top: clamp(10px, 2vw, 20px);
+    right: clamp(10px, 2vw, 20px);
+    z-index: 10;
+}
+
+#btnMute {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: clamp(6px, 1.2vw, 10px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    /* área de toque mínima de 44px para mobile */
+    min-width: 44px;
+    min-height: 44px;
+}
+
+#btnMute:hover { background: rgba(255, 255, 255, 0.15); }
+
+#muteIcon {
+    width: clamp(28px, 3.5vw, 40px);
+    height: clamp(28px, 3.5vw, 40px);
+    display: block;
+}
