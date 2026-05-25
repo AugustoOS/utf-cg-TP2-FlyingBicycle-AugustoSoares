@@ -47,30 +47,14 @@ body { background: #000; overflow: hidden; }
     #mobileControls { display: block; }
 }
 
-#dpad {
-    display: grid;
-    grid-template-areas:
-        ". up ."
-        "left . right"
-        ". down .";
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows:    repeat(3, 1fr);
-    gap: 5px;
-}
-
-#btnUp    { grid-area: up; }
-#btnLeft  { grid-area: left; }
-#btnRight { grid-area: right; }
-#btnDown  { grid-area: down; }
-
 .mobileBtn {
-    width: clamp(52px, 14vw, 70px);
-    height: clamp(52px, 14vw, 70px);
+    width: 44px;
+    height: 44px;
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 14px;
+    border-radius: 10px;
     color: rgba(255, 255, 255, 0.9);
-    font-size: clamp(18px, 5vw, 26px);
+    font-size: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,3 +66,19 @@ body { background: #000; overflow: hidden; }
 }
 
 .mobileBtn:active { background: rgba(255, 255, 255, 0.22); }
+
+#dpad {
+    display: grid;
+    grid-template-areas:
+        ". up ."
+        "left . right"
+        ". down .";
+    grid-template-columns: 44px 44px 44px;
+    grid-template-rows:    44px 44px 44px;
+    gap: 4px;
+}
+
+#btnUp    { grid-area: up; }
+#btnLeft  { grid-area: left; }
+#btnRight { grid-area: right; }
+#btnDown  { grid-area: down; }

@@ -1,5 +1,5 @@
 const state = {
-    bike: { x: 0, y: 20, z: 0, angle: 0, turnVel: 0 },
+    bike: { x: 0, y: 20, z: 0, angle: 0, turnVel: 0, hGround: 15 },
     keys: {},
     touch: { left: false, right: false, up: false, down: false },
     camera: {
@@ -11,8 +11,8 @@ const state = {
     useLighting: true,
 };
 
-const Y_MIN      = 15;    // altura mínima de voo
-const Y_MAX      = 80;    // altura máxima de voo
+const H_MIN      = 2;     // altura mínima de voo
+const H_MAX      = 70;    // altura máxima de voo
 const SPEED      = 0.2;   // velocidade de avanço
 const TURN_ACCEL = 0.0005; // aceleração da curva
 const TURN_MAX   = 0.010;  // velocidade máxima de curva
@@ -186,8 +186,9 @@ function update() {
     state.camera.orbit.yaw += b.turnVel;
 
     // altura com limite
-    if (k['ArrowUp']   || k['KeyW'] || state.touch.up)   b.y = Math.min(b.y + 0.15, Y_MAX);
-    if (k['ArrowDown'] || k['KeyS'] || state.touch.down) b.y = Math.max(b.y - 0.15, Y_MIN);
+    if (k['ArrowUp']   || k['KeyW'] || state.touch.up)   b.hGround = Math.min(b.hGround + 0.15, H_MAX);
+    if (k['ArrowDown'] || k['KeyS'] || state.touch.down) b.hGround = Math.max(b.hGround - 0.15, H_MIN);
+    b.y = Ground._altura(b.x, b.z) + b.hGround;
 
     // avança automaticamente
     b.x -= Math.sin(b.angle) * SPEED;
