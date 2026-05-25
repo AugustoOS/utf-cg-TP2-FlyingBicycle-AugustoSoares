@@ -1,6 +1,7 @@
 const state = {
     bike: { x: 0, y: 20, z: 0, angle: 0, turnVel: 0 },
     keys: {},
+    touch: { left: false, right: false },
     camera: {
         active: 1,
         side:   0,
@@ -35,8 +36,9 @@ function initAudio() {
         theme.play().catch(() => {});
         noise.play().catch(() => {});
     };
-    window.addEventListener('keydown',   start, { once: false });
-    window.addEventListener('mousedown', start, { once: false });
+    window.addEventListener('keydown',    start, { once: false });
+    window.addEventListener('mousedown',  start, { once: false });
+    window.addEventListener('touchstart', start, { once: false });
 
     // botão mute
     const btn  = document.getElementById('btnMute');
@@ -69,7 +71,8 @@ async function main() {
 
     Ground.init();
     Moon.init();
-    await Promise.all([Trees.init(), Bushs.init(), Rocks.init(), Bike.init()]);
+    // allSettled: mesmo que algum .obj falhe (GitHub Pages, 404, etc.), o loop inicia
+    await Promise.allSettled([Trees.init(), Bushs.init(), Rocks.init(), Bike.init()]);
 
     window.addEventListener('keydown', e => {
         state.keys[e.key] = true;
@@ -91,8 +94,8 @@ async function main() {
         if (!dragging) return;
         const dx = e.clientX - lastMouse.x;
         const dy = e.clientY - lastMouse.y;
-        state.camera.orbit.yaw   += dx * 0.005;
-        state.camera.orbit.pitch -= dy * 0.005;
+        state.camera.orbit.yaw   -= dx * 0.005;
+        state.camera.orbit.pitch += dy * 0.005;
         // trava pra câmera não virar de cabeça pra baixo
         if (state.camera.orbit.pitch >  1.5) state.camera.orbit.pitch =  1.5;
         if (state.camera.orbit.pitch < -1.5) state.camera.orbit.pitch = -1.5;
@@ -122,8 +125,8 @@ async function main() {
         if (e.touches.length === 1 && dragging) {
             const dx = e.touches[0].clientX - lastMouse.x;
             const dy = e.touches[0].clientY - lastMouse.y;
-            state.camera.orbit.yaw   += dx * 0.005;
-            state.camera.orbit.pitch -= dy * 0.005;
+            state.camera.orbit.yaw   -= dx * 0.005;
+            state.camera.orbit.pitch += dy * 0.005;
             if (state.camera.orbit.pitch >  1.5) state.camera.orbit.pitch =  1.5;
             if (state.camera.orbit.pitch < -1.5) state.camera.orbit.pitch = -1.5;
             lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -140,6 +143,19 @@ async function main() {
         }
     }, { passive: false });
 
+    // botões de direção para mobile
+    function setupMobileBtn(id, key) {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        const press   = e => { e.preventDefault(); e.stopPropagation(); state.touch[key] = true; };
+        const release = e => { e.preventDefault(); state.touch[key] = false; };
+        btn.addEventListener('touchstart',  press,   { passive: false });
+        btn.addEventListener('touchend',    release, { passive: false });
+        btn.addEventListener('touchcancel', release, { passive: false });
+    }
+    setupMobileBtn('btnLeft',  'left');
+    setupMobileBtn('btnRight', 'right');
+
     requestAnimationFrame(loop);
 }
 
@@ -147,8 +163,8 @@ function update() {
     const k = state.keys;
     const b = state.bike;
 
-    const goLeft  = k['ArrowLeft']  || k['a'];
-    const goRight = k['ArrowRight'] || k['d'];
+    const goLeft  = k['ArrowLeft']  || k['a'] || state.touch.left;
+    const goRight = k['ArrowRight'] || k['d'] || state.touch.right;
 
     if (goLeft && goRight) {
         // A + D ao mesmo tempo: se anulam
@@ -185,9 +201,18 @@ function update() {
         const eyeZ = b.z + D * cosP * Math.cos(yaw);
         const eyeY = b.y + D * sinP;
         const chao = Ground._altura(eyeX, eyeZ) + 1.5;  // 1.5 unidades de margem
-        if (eyeY < chao && sinP < -0.001) {
-            // zoom máximo que mantém o olho acima da grama: D = (bike_y - chao) / -sin(pitch)
-            state.camera.zoom = Math.max(4, (b.y - chao) / (-sinP));
+        if (eyeY < chao) {
+            if (sinP < -0.001) {
+                // reduz o zoom até o eye ficar acima do chão
+                const zoomIdeal = (b.y - chao) / (-sinP);
+                if (zoomIdeal >= 4) {
+                    state.camera.zoom = zoomIdeal;
+                } else {
+                    // mesmo zoom mínimo não é suficiente: eleva o pitch para não cavar
+                    state.camera.zoom = 4;
+                    state.camera.orbit.pitch = -Math.asin((b.y - chao) / 4);
+                }
+            }
         }
     }
 }
@@ -211,6 +236,7 @@ function loop(time) {
     gl.uniform3fv(loc.uLightColor, [0.7, 0.8, 1]);
     gl.uniform3fv(loc.uViewPos,    eye);
     gl.uniform1f(loc.uAmbient,     0.2);
+    gl.uniform1f(loc.uDiffuse,     1.0);  // cada objeto pode sobrescrever (grama = 0.4)
     gl.uniform1f(loc.uShininess,   32);
     gl.uniform1f(loc.uSpecular,    1.0);  // cada objeto pode sobrescrever (grama = 0)
     gl.uniform1i(loc.uUseLighting, state.useLighting ? 1 : 0);

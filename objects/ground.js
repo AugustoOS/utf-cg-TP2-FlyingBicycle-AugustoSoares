@@ -102,6 +102,7 @@ const Ground = {
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
         gl.uniform1i(loc.uTexture,  0);
         gl.uniform1f(loc.uSpecular, 0.0);  // grama é fosca, sem reflexo especular
+        gl.uniform1f(loc.uDiffuse,  0.4);  // grama absorve mais luz, sem brilho intenso
 
         for (const key of needed) {
             const [cx, cz] = key.split(',').map(Number);
@@ -110,6 +111,8 @@ const Ground = {
             gl.uniformMatrix3fv(loc.uNormalMatrix, false, identNormal);
             GLPanel.drawVAO(this.chunks.get(key));
         }
+
+        gl.uniform1f(loc.uDiffuse, 1.0);  // restaura para os objetos seguintes
     },
 };
 

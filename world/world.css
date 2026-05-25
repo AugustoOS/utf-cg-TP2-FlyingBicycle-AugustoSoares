@@ -33,3 +33,41 @@ body { background: #000; overflow: hidden; }
     height: clamp(28px, 3.5vw, 40px);
     display: block;
 }
+
+/* botões de direção — visíveis apenas em dispositivos touch */
+#mobileControls {
+    display: none;
+    position: fixed;
+    bottom: clamp(20px, 5vh, 40px);
+    left: 0;
+    right: 0;
+    justify-content: space-between;
+    padding: 0 clamp(15px, 4vw, 30px);
+    z-index: 10;
+    pointer-events: none;
+}
+
+@media (pointer: coarse) {
+    #mobileControls { display: flex; }
+}
+
+.mobileBtn {
+    pointer-events: all;
+    width: clamp(64px, 18vw, 90px);
+    height: clamp(64px, 18vw, 90px);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: clamp(24px, 7vw, 36px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.mobileBtn:active { background: rgba(255, 255, 255, 0.22); }

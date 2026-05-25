@@ -124,6 +124,7 @@ GLPanel.init = async function init(canvasElement, options) {
             uViewPos:      gl.getUniformLocation(program, 'u_viewPos'),
             uUseLighting:  gl.getUniformLocation(program, 'u_useLighting'),
             uAmbient:      gl.getUniformLocation(program, 'u_ambient'),
+            uDiffuse:      gl.getUniformLocation(program, 'u_diffuse'),
             uShininess:    gl.getUniformLocation(program, 'u_shininess'),
             uSpecular:     gl.getUniformLocation(program, 'u_specular'),
             uTexture:      gl.getUniformLocation(program, 'u_texture'),

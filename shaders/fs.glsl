@@ -11,6 +11,7 @@ uniform vec3  u_viewPos;
 uniform bool  u_useLighting;
 
 uniform float u_ambient;
+uniform float u_diffuse;       // intensidade do diffuse (grama ~0.4, demais = 1.0)
 uniform float u_shininess;
 uniform float u_specular;      // 0 = fosco (grama), 1 = brilhante (metal, pedra)
 uniform sampler2D u_texture;
@@ -35,7 +36,7 @@ void main() {
         vec3 reflectDir = reflect(-lightDir, normal);
 
         vec3 ambient  = u_ambient * u_lightColor;
-        vec3 diffuse  = max(dot(normal, lightDir), 0.0) * u_lightColor;
+        vec3 diffuse  = u_diffuse * max(dot(normal, lightDir), 0.0) * u_lightColor;
         vec3 specular = u_specular * pow(max(dot(viewDir, reflectDir), 0.0), u_shininess) * u_lightColor;
 
         litColor = texColor * vec4(ambient + diffuse + specular, 1.0);
