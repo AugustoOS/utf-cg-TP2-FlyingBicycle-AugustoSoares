@@ -75,13 +75,13 @@ async function main() {
     await Promise.allSettled([Trees.init(), Bushs.init(), Rocks.init(), Bike.init()]);
 
     window.addEventListener('keydown', e => {
-        state.keys[e.key] = true;
-        if (e.key === '1')                  state.camera.active = 1;
-        if (e.key === '2')                  state.camera.active = 2;
-        if (e.key === 'c' || e.key === 'C') state.camera.side = (state.camera.side + 1) % 4;
-        if (e.key === 'l' || e.key === 'L') state.useLighting = !state.useLighting;
+        state.keys[e.code] = true;
+        if (e.code === 'Digit1') state.camera.active = 1;
+        if (e.code === 'Digit2') state.camera.active = 2;
+        if (e.code === 'KeyC')   state.camera.side = (state.camera.side + 1) % 4;
+        if (e.code === 'KeyL')   state.useLighting = !state.useLighting;
     });
-    window.addEventListener('keyup', e => { state.keys[e.key] = false; });
+    window.addEventListener('keyup', e => { state.keys[e.code] = false; });
 
     let dragging      = false;
     let lastMouse     = { x: 0, y: 0 };
@@ -163,8 +163,8 @@ function update() {
     const k = state.keys;
     const b = state.bike;
 
-    const goLeft  = k['ArrowLeft']  || k['a'] || state.touch.left;
-    const goRight = k['ArrowRight'] || k['d'] || state.touch.right;
+    const goLeft  = k['ArrowLeft'] || k['KeyA'] || state.touch.left;
+    const goRight = k['ArrowRight'] || k['KeyD'] || state.touch.right;
 
     if (goLeft && goRight) {
         // A + D ao mesmo tempo: se anulam
@@ -184,8 +184,8 @@ function update() {
     state.camera.orbit.yaw += b.turnVel;
 
     // altura com limite
-    if (k['ArrowUp']   || k['w']) b.y = Math.min(b.y + 0.15, Y_MAX);
-    if (k['ArrowDown'] || k['s']) b.y = Math.max(b.y - 0.15, Y_MIN);
+    if (k['ArrowUp']   || k['KeyW']) b.y = Math.min(b.y + 0.15, Y_MAX);
+    if (k['ArrowDown'] || k['KeyS']) b.y = Math.max(b.y - 0.15, Y_MIN);
 
     // avança automaticamente
     b.x -= Math.sin(b.angle) * SPEED;
