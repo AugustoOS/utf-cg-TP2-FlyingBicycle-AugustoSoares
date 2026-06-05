@@ -17,9 +17,7 @@ const Camera = {
         return [x + Math.sin(a) * 10, y + 3, z + Math.cos(a) * 10];
     },
 
-    getView(state) {
-        const eye = Camera.getEye(state);
-
+    getView(state, eye) {
         if (state.camera.active === 1) {
             // orbit: câmera sempre aponta para o centro da bike
             const center = [state.bike.x, state.bike.y + 1, state.bike.z];

@@ -27,7 +27,7 @@ const Vec4 = {
 	// Norma (somente parte 3D)
 	norm(v) {
 		return Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-	},
+	},	
 
 	// Normalizacao
 	normalize(v) {
@@ -190,7 +190,18 @@ const Mat4 = {
 
 	asFloat32Array(M) {
 		return new Float32Array(M);
-	}
+	},
+
+	// vi essa implementaçao e achei util para meu caso:
+	normalMat(m) {
+		const s   = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
+		const inv = 1 / s;
+		return new Float32Array([
+			m[0]*inv, m[1]*inv, m[2]*inv,
+			m[4]*inv, m[5]*inv, m[6]*inv,
+			m[8]*inv, m[9]*inv, m[10]*inv,
+		]);
+	},
 };
 
 

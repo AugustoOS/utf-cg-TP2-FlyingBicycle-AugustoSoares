@@ -4,7 +4,7 @@ const Bushs = {
     chunks:    new Map(),
 
     SCALE:     0.5,
-    PER_CHUNK: 8,   // arbustos por chunk
+    PER_CHUNK: 14,  // arbustos por chunk
 
     async init() {
         const geo = await OBJLoader.load('../assets/models/bush/Bush1.obj');
@@ -71,21 +71,10 @@ const Bushs = {
                     Mat4.scale(t.scale, t.scale, t.scale)
                 );
                 gl.uniformMatrix4fv(loc.uModel,        false, Mat4.asFloat32Array(model));
-                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Bushs._normalMat(model));
+                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Mat4.normalMat(model));
                 GLPanel.drawVAO(this.vaoInfo);
             }
         }
-    },
-
-    // extrai a rotação da matrix model (divide pela escala — comprimento da primeira coluna)
-    _normalMat(m) {
-        const escala    = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
-        const invEscala = 1 / escala;
-        return new Float32Array([
-            m[0]*invEscala, m[1]*invEscala, m[2]*invEscala,
-            m[4]*invEscala, m[5]*invEscala, m[6]*invEscala,
-            m[8]*invEscala, m[9]*invEscala, m[10]*invEscala,
-        ]);
     },
 };
 

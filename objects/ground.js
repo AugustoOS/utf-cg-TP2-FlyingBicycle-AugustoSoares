@@ -95,8 +95,7 @@ const Ground = {
                 this.chunks.set(key, this._buildChunk(cx, cz));
             }
 
-        const gl           = GLPanel.state.gl;
-        const identNormal  = new Float32Array([1,0,0, 0,1,0, 0,0,1]);
+        const gl = GLPanel.state.gl;
 
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
@@ -106,13 +105,14 @@ const Ground = {
 
         for (const key of needed) {
             const [cx, cz] = key.split(',').map(Number);
-            // translate para posicionar o chunk no mundo (somente X e Z)
-            gl.uniformMatrix4fv(loc.uModel, false, Mat4.asFloat32Array(Mat4.translate(cx * cs, 0, cz * cs)));
-            gl.uniformMatrix3fv(loc.uNormalMatrix, false, identNormal);
+            const model = Mat4.translate(cx * cs, 0, cz * cs);
+            gl.uniformMatrix4fv(loc.uModel,        false, Mat4.asFloat32Array(model));
+            gl.uniformMatrix3fv(loc.uNormalMatrix, false, Mat4.normalMat(model));
             GLPanel.drawVAO(this.chunks.get(key));
         }
 
-        gl.uniform1f(loc.uDiffuse, 1.0);  // restaura para os objetos seguintes
+        gl.uniform1f(loc.uDiffuse,  1.0);  // restaura para os objetos seguintes
+        gl.uniform1f(loc.uSpecular, 1.0);
     },
 };
 

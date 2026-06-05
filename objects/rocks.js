@@ -4,7 +4,7 @@ const Rocks = {
     chunks:    new Map(),
 
     SCALE:     0.8,
-    PER_CHUNK: 1,   // pedras são esparsas
+    PER_CHUNK: 3,
 
     async init() {
         const geo = await OBJLoader.load('../assets/models/rocks/RockPackByPava.obj');
@@ -34,16 +34,17 @@ const Rocks = {
 
         const cs   = Ground.CHUNK;
         const inst = [];
-        // só gera pedra se o hash do chunk for > 0.3 (70% dos chunks têm pedra)
-        if (this._rand(cx, cz, 0) > 0.3) {
-            const lx = this._rand(cx, cz, 1) * cs;
-            const lz = this._rand(cx, cz, 2) * cs;
-            const wx = cx * cs + lx, wz = cz * cs + lz;
-            inst.push({
-                wx, wy: Ground._altura(wx, wz), wz,
-                rot:   this._rand(cx, cz, 3) * Math.PI * 2,
-                scale: this.SCALE * (0.7 + this._rand(cx, cz, 4) * 0.6),
-            });
+        for (let i = 0; i < this.PER_CHUNK; i++) {
+            if (this._rand(cx, cz, i * 5) > 0.3) {
+                const lx = this._rand(cx, cz, i * 5 + 1) * cs;
+                const lz = this._rand(cx, cz, i * 5 + 2) * cs;
+                const wx = cx * cs + lx, wz = cz * cs + lz;
+                inst.push({
+                    wx, wy: Ground._altura(wx, wz), wz,
+                    rot:   this._rand(cx, cz, i * 5 + 3) * Math.PI * 2,
+                    scale: this.SCALE * (0.7 + this._rand(cx, cz, i * 5 + 4) * 0.6),
+                });
+            }
         }
         this.chunks.set(key, inst);
         return inst;
@@ -76,21 +77,10 @@ const Rocks = {
                     Mat4.scale(t.scale, t.scale, t.scale)
                 );
                 gl.uniformMatrix4fv(loc.uModel,        false, Mat4.asFloat32Array(model));
-                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Rocks._normalMat(model));
+                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Mat4.normalMat(model));
                 GLPanel.drawVAO(this.vaoInfo);
             }
         }
-    },
-
-    // extrai a rotação da matrix model (divide pela escala — comprimento da primeira coluna)
-    _normalMat(m) {
-        const escala    = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
-        const invEscala = 1 / escala;
-        return new Float32Array([
-            m[0]*invEscala, m[1]*invEscala, m[2]*invEscala,
-            m[4]*invEscala, m[5]*invEscala, m[6]*invEscala,
-            m[8]*invEscala, m[9]*invEscala, m[10]*invEscala,
-        ]);
     },
 };
 

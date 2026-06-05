@@ -229,13 +229,13 @@ function loop(time) {
 
     const aspect     = gl.canvas.width / gl.canvas.height;
     const projection = Mat4.perspective(Math.PI / 3, aspect, 0.1, 1000);
-    const view       = Camera.getView(state);
     const eye        = Camera.getEye(state);
+    const view       = Camera.getView(state, eye);
 
-    gl.uniformMatrix4fv(loc.uProjection, false, Mat4.asFloat32Array(projection));
-    gl.uniformMatrix4fv(loc.uView,       false, Mat4.asFloat32Array(view));
+    const vp = Mat4.mult(projection, view);
+    gl.uniformMatrix4fv(loc.uVP, false, Mat4.asFloat32Array(vp));
     // iluminação
-    gl.uniform3fv(loc.uLightPos,   [0, 300, 0]);
+    gl.uniform3fv(loc.uLightPos,   [eye[0], eye[1] + 0.6 * 300, eye[2] - 0.8 * 300]);
     gl.uniform3fv(loc.uLightColor, [0.7, 0.8, 1]);
     gl.uniform3fv(loc.uViewPos,    eye);
     gl.uniform1f(loc.uAmbient,     0.2);

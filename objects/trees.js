@@ -4,7 +4,7 @@ const Trees = {
     chunks:   new Map(),
 
     SCALE:    1.0,
-    PER_CHUNK: 3,   // árvores por chunk
+    PER_CHUNK: 6,   // árvores por chunk
 
     async init() {
         const geo = await OBJLoader.load('../assets/models/tree/Tree2.obj');
@@ -61,7 +61,8 @@ const Trees = {
         const gl = GLPanel.state.gl;
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        gl.uniform1i(loc.uTexture, 0);
+        gl.uniform1i(loc.uTexture,  0);
+        gl.uniform1f(loc.uSpecular, 0.0);  // folhas são foscas
 
         for (const key of needed) {
             const [cx, cz] = key.split(',').map(Number);
@@ -71,21 +72,12 @@ const Trees = {
                     Mat4.scale(t.scale, t.scale, t.scale)
                 );
                 gl.uniformMatrix4fv(loc.uModel,        false, Mat4.asFloat32Array(model));
-                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Trees._normalMat(model));
+                gl.uniformMatrix3fv(loc.uNormalMatrix, false, Mat4.normalMat(model));
                 GLPanel.drawVAO(this.vaoInfo);
             }
         }
-    },
 
-    // extrai a rotação da matrix model (divide pela escala — comprimento da primeira coluna)
-    _normalMat(m) {
-        const escala    = Math.sqrt(m[0]*m[0] + m[1]*m[1] + m[2]*m[2]);
-        const invEscala = 1 / escala;
-        return new Float32Array([
-            m[0]*invEscala, m[1]*invEscala, m[2]*invEscala,
-            m[4]*invEscala, m[5]*invEscala, m[6]*invEscala,
-            m[8]*invEscala, m[9]*invEscala, m[10]*invEscala,
-        ]);
+        gl.uniform1f(loc.uSpecular, 1.0);
     },
 };
 
