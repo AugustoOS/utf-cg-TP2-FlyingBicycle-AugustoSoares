@@ -4,6 +4,8 @@ Trabalho prático da disciplina de Computação Gráfica (período 11). Uma bici
 
 **[Abrir no GitHub Pages](https://augustoos.github.io/TP2---CG---Augusto-Soares/)**
 
+demonstration yt: https://youtu.be/79Zq138e-eo
+
 ---
 
 ## O que tem no projeto
