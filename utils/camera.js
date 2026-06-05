@@ -12,9 +12,11 @@ const Camera = {
             ];
         }
 
-        const sideAngles = [0, Math.PI, Math.PI / 2, -Math.PI / 2];
+        // (a) frente, (b) trás, (c) direita, (d) esquerda — câmera um pouco acima olhando levemente para baixo
+        const D = 15, H = 6;
+        const sideAngles = [Math.PI, 0, -Math.PI / 2, Math.PI / 2];
         const a = angle + sideAngles[state.camera.side];
-        return [x + Math.sin(a) * 10, y + 3, z + Math.cos(a) * 10];
+        return [x + Math.sin(a) * D, y + H, z + Math.cos(a) * D];
     },
 
     getView(state, eye) {

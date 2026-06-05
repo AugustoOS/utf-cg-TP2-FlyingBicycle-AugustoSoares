@@ -5,8 +5,8 @@ const state = {
     camera: {
         active: 1,
         side:   0,
-        orbit:  { yaw: 0, pitch: 0.3 },
-        zoom:   14,
+        orbit:  { yaw: 0, pitch: 1.0 },  // overhead por padrão
+        zoom:   40,
     },
     useLighting: true,
 };
@@ -76,10 +76,13 @@ async function main() {
 
     window.addEventListener('keydown', e => {
         state.keys[e.code] = true;
-        if (e.code === 'Digit1') state.camera.active = 1;
-        if (e.code === 'Digit2') state.camera.active = 2;
-        if (e.code === 'KeyC')   state.camera.side = (state.camera.side + 1) % 4;
-        if (e.code === 'KeyL')   state.useLighting = !state.useLighting;
+        if (e.code === 'Digit1') { state.camera.active = 1; }
+        if (e.code === 'Digit2') { state.camera.active = 2; state.camera.side = 0; }  // frente
+        if (e.code === 'Digit3') { state.camera.active = 2; state.camera.side = 1; }  // trás
+        if (e.code === 'Digit4') { state.camera.active = 2; state.camera.side = 2; }  // direita
+        if (e.code === 'Digit5') { state.camera.active = 2; state.camera.side = 3; }  // esquerda
+        if (e.code === 'KeyC')   { state.camera.active = 2; state.camera.side = (state.camera.side + 1) % 4; }
+        if (e.code === 'KeyL')   { state.useLighting = !state.useLighting; }
     });
     window.addEventListener('keyup', e => { state.keys[e.code] = false; });
 
