@@ -5,8 +5,8 @@ const state = {
     camera: {
         active: 1,
         side:   0,
-        orbit:  { yaw: 0, pitch: 1.0 },  // overhead por padrão
-        zoom:   40,
+        orbit:  { yaw: 0, pitch: 0.3 },
+        zoom:   14,
     },
     useLighting: true,
 };
